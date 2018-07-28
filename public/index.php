@@ -1,5 +1,8 @@
 <?php
 
+phpinfo();
+die();
+
 // include composer's autoloader
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
