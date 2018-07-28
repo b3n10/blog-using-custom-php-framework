@@ -32,4 +32,12 @@ class Password extends \Core\Controller {
 
 	}
 
+	public function resetAction() {
+		$token = $this->route_params['token'];
+
+		$user = User::findByToken($token);
+		var_dump($user);
+		die();
+	}
+
 }

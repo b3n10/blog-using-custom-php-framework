@@ -30,5 +30,11 @@ Router::add('{controller}');
 Router::add('{controller}/{action}');
 Router::add('{controller}/{id:\d+}/{action}');
 
+// custom route for password reset token
+Router::add('password/reset/{token:[\da-f]+}', [
+	'controller'	=>	'Password',
+	'action'			=>	'reset'
+]);
+
 Router::dispatch($url);
 

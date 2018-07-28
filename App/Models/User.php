@@ -182,4 +182,32 @@ class User extends \Core\Model {
 
 	}
 
+	public static function findByToken($token) {
+		$token = new Token($token);
+		$token_hash = $token->getHash();
+
+		$sql = 'SELECT * FROM users
+			WHERE password_reset_hash=:token_hash';
+
+		$pdo = self::connectDB();
+		$stmt = $pdo->prepare($sql);
+
+		$stmt->bindValue(':token_hash', $token_hash, PDO::PARAM_STR);
+
+		$stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+
+		$stmt->execute();
+
+		$user =  $stmt->fetch();
+
+		if ($user) {
+			// if current time has not password password_reset_expiry
+			if (date('Y-m-d H:i:s', time()) < $user->password_reset_expiry) {
+				return $user;
+			}
+		}
+
+		return false;
+	}
+
 }
