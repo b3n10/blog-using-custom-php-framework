@@ -63,7 +63,7 @@ class Router {
 			$controller = "\App\Controllers\\" . self::studlyCaps(self::$params['controller']);
 
 			if (class_exists($controller)) {
-				$controller_obj = new $controller;
+				$controller_obj = new $controller(self::$params);
 
 				// if no action is passed on $url, call index method of $controller
 				if (!isset(self::$params['action'])) {
