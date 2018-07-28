@@ -1,0 +1,14 @@
+{
+	"require": {
+		"php": "7.1.19",
+		"mailgun/mailgun-php": "^2.5",
+		"php-http/guzzle6-adapter": "^1.1",
+		"php-http/message": "^1.6"
+	},
+	"autoload": {
+		"psr-4": {
+			"App\\": "App/",
+			"Core\\": "Core/"
+		}
+	}
+}

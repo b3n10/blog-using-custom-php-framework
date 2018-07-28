@@ -1,0 +1,2 @@
+[13-Jul-2018 11:48:26 Asia/Shanghai] <h1>Fatal Error: </h1><p>Uncaught exception: "Exception"</p><p>Message: "Controller '\App\Controllers\Sdf' doesn't exists!"</p><p>Stack Trace: <pre>#0 /home/ben/sdcard-16gig/workspace/public_html/custom_mvc/public/index.php(24): Core\Router::dispatch('sdf')
+#1 {main}</pre></p><p>Thrown in "/home/ben/sdcard-16gig/workspace/public_html/custom_mvc/Core/Router.php" on line "77"
