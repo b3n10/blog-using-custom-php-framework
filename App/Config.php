@@ -16,9 +16,6 @@ class Config {
 	const SHOW_ERRORS	=	true;
 	const SECRET_KEY	=	'qpHB25v1wj4A5HfDMvcfERQHJ8ICa7Bx';
 
-	const MAILGUN_API_KEY = '';
-	const MAILGUN_DOMAIN	=	'';
-
 	public static function getDSN() {
 		$db = parse_url(getenv(self::ENV_VAR));
 
