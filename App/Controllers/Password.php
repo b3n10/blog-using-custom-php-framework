@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use \Core\View;
 use \App\Models\User;
+use \App\Flash;
 
 class Password extends \Core\Controller {
 
@@ -36,8 +37,34 @@ class Password extends \Core\Controller {
 		$token = $this->route_params['token'];
 
 		$user = User::findByToken($token);
-		var_dump($user);
-		die();
+
+		if ($user) {
+			View::render('Password/reset.php', [
+				'title'	=>	'Reset Password',
+				'token'	=>	$token
+			]);
+		} else {
+			echo 'invalid token';
+		}
+	}
+
+	public function resetPasswordAction() {
+		$token = $_POST['token'];
+
+		$user = new User($_POST);
+		$user->validatePassword();
+
+		if (!$user->errors) {
+			$user = User::findByToken($token);
+			if ($user) {
+				echo 'reset password code';
+			} else {
+				echo 'user not found';
+			}
+		} else {
+			Flash::addMessage($user->errors, Flash::WARNING);
+			$this->redirect('/password/reset/' . $token);
+		}
 	}
 
 }
