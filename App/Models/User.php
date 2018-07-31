@@ -37,11 +37,10 @@ class User extends \Core\Model {
 
 	public function validate() {
 		// name
-		if (strlen($this->name) < 2) {
-			$this->errors[] = 'Name must at least have 2 characters!';
-		}
 		if ($this->name === '') {
 			$this->errors[] = 'Name is required!';
+		} else if (strlen($this->name) < 2) {
+			$this->errors[] = 'Name must at least have 2 characters!';
 		}
 
 		// email
@@ -55,26 +54,18 @@ class User extends \Core\Model {
 		}
 
 		// password
-		if ($this->password !== $this->confirm_password) {
-			$this->errors[] = 'Password doesn\'t match confirmation!';
-		}
-		if (strlen($this->password) < 6) {
-			$this->errors[] = 'Password must be at least 6 characters!';
-		}
-		if (preg_match('/.*[a-z]+.*/', $this->password) === 0) {
-			$this->errors[] = 'Password must have at least one lowercase character!';
-		}
-		if (preg_match('/.*[A-Z]+.*/', $this->password) === 0) {
-			$this->errors[] = 'Password must have at least one uppercase character!';
-		}
-		if (preg_match('/.*\d+.*/', $this->password) === 0) {
-			$this->errors[] = 'Password must have at least one numeric character!';
-		}
-		if (preg_match('/.*[!-\/:-@\[-`{-~].*/', $this->password) === 0) {
-			$this->errors[] = 'Password must have at least one symbol!';
-		}
+		$this->validatePassword();
 
 		return $this->errors;
+	}
+
+	public function validatePassword() {
+		if ($this->password !== $this->confirm_password) $this->errors[] = 'Password doesn\'t match confirmation!';
+		if (strlen($this->password) < 6) $this->errors[] = 'Password must be at least 6 characters!';
+		if (preg_match('/.*[a-z]+.*/', $this->password) === 0) $this->errors[] = 'Password must have at least one lowercase character!';
+		if (preg_match('/.*[A-Z]+.*/', $this->password) === 0) $this->errors[] = 'Password must have at least one uppercase character!';
+		if (preg_match('/.*\d+.*/', $this->password) === 0) $this->errors[] = 'Password must have at least one numeric character!';
+		if (preg_match('/.*[!-\/:-@\[-`{-~].*/', $this->password) === 0) $this->errors[] = 'Password must have at least one symbol!';
 	}
 
 	public static function emailExists($email) {
