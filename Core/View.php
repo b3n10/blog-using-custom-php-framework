@@ -15,10 +15,24 @@ class View {
 
 			// add notification messages
 			$notification = [];
-			foreach(Flash::getMessage() as $key => $value) { $notification[$key] = htmlspecialchars($value); }
+
+			foreach(Flash::getMessage() as $key => $value) {
+				if (is_array($value)) {
+					$new_value = '<h3>Error</h3>';
+					$new_value .= '<ul>';
+
+					foreach ($value as $v) { $new_value .= '<li>' . htmlspecialchars($v) . '</li>'; }
+
+					$new_value .= '</ul>';
+
+					$notification[$key] = $new_value;
+				} else {
+					$notification[$key] = htmlspecialchars($value);
+				}
+			}
 
 			// user object
-			$user = \App\Auth::getUser();
+			$user_object = \App\Auth::getUser();
 
 			require_once $file;
 		} else {
