@@ -44,11 +44,17 @@ class Password extends \Core\Controller {
 				'token'	=>	$token
 			]);
 		} else {
-			echo 'invalid token';
+			Flash::addMessage('Password reset request already expired! Try again:', Flash::WARNING);
+			$this->redirect('/password/forgot');
 		}
 	}
 
 	public function resetPasswordAction() {
+		if (!$_POST) {
+			Flash::addMessage('Access denied !', Flash::WARNING);
+			$this->redirect('/');
+		}
+
 		$token = $_POST['token'];
 
 		$user = new User($_POST);
@@ -56,8 +62,13 @@ class Password extends \Core\Controller {
 
 		if (!$user->errors) {
 			$user = User::findByToken($token);
+
 			if ($user) {
-				echo 'reset password code';
+				if ($user->resetPassword($_POST['password'])) {
+					View::render('Password/reset_success.php', [
+						'title'	=>	'Success reset password'
+					]);
+				}
 			} else {
 				echo 'user not found';
 			}

@@ -166,8 +166,8 @@ class User extends \Core\Model {
 
 		$url = 'http://' . $_SERVER['HTTP_HOST'] . '/password/reset/' . $this->password_hash_token;
 
-		$text = "Please click on the following url to reset your password: $url";
-		$html = "Please click on the <a href='$url'>url</a> to reset your password.";
+		$text = "Please click on the following link to reset your password: $url. This request will expire in 2 hours.";
+		$html = "Please click on this <a href='$url'>link</a> to reset your password. This request will expire in 2 hours.";
 
 		Mail::send($this->email, 'Password Reset', $text, $html);
 
@@ -199,6 +199,24 @@ class User extends \Core\Model {
 		}
 
 		return false;
+	}
+
+	public function resetPassword($password) {
+		$password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+		$sql = 'UPDATE users
+			SET password_hash = :password_hash,
+					password_reset_hash = NULL,
+					password_reset_expiry = NULL
+			WHERE id = :id';
+
+		$pdo = self::connectDB();
+		$stmt = $pdo->prepare($sql);
+
+		$stmt->bindValue(':password_hash', $password_hash, PDO::PARAM_STR);
+		$stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
+
+		return $stmt->execute();
 	}
 
 }
