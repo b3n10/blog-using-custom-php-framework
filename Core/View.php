@@ -10,9 +10,6 @@ class View {
 		$file = '../App/Views/' . $file;
 
 		if (is_readable($file)) {
-			// use extract to get $args array as variables
-			extract($args, EXTR_SKIP);
-
 			// add notification messages
 			$notification = [];
 
@@ -31,8 +28,10 @@ class View {
 				}
 			}
 
-			// user object
-			$user_object = \App\Auth::getUser();
+			// use extract to get $args array as variables
+			extract($args, EXTR_SKIP);
+
+			$user_object = $args['user_object'] ?? \App\Auth::getUser();
 
 			require_once $file;
 		} else {
