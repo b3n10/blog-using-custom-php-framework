@@ -28,7 +28,7 @@ class Signup extends \Core\Controller {
 		} else {
 			View::render("Signup/new.php", [
 				"title"	=>	"Signup - Error validation",
-				"user"	=>	$user
+				"user_object"	=>	$user
 			]);
 		}
 	}

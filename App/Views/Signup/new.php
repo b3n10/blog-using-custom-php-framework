@@ -1,8 +1,8 @@
 <?php require_once dirname(__DIR__) . "/header.php"; ?>
-	<?php if (isset($user->errors)): ?>
+	<?php if (isset($user_object->errors)): ?>
 		<h3>Errors</h3>
 		<ul>
-			<?php foreach($user->errors as $error): ?>
+			<?php foreach($user_object->errors as $error): ?>
 			<li><?php echo htmlspecialchars($error); ?></li>
 			<?php endforeach ?>
 		</ul>
@@ -11,11 +11,11 @@
 	<form action="/signup/create" method="POST" class="input-forms">
 		<div>
 			<label for="input_name">Name:</label>
-			<input type="text" id="input_name" name="name" placeholder="Name" value="<?php echo ($user) ? htmlspecialchars($user->name) : ''; ?>" autofocus required />
+			<input type="text" id="input_name" name="name" placeholder="Name" value="<?php echo ($user_object) ? htmlspecialchars($user_object->name) : ''; ?>" autofocus required />
 		</div>
 		<div>
 			<label for="input_email">Email Address:</label>
-			<input type="email" id="input_email" name="email" placeholder="name@company" value="<?php echo ($user) ? htmlspecialchars($user->email) : ''; ?>" required />
+			<input type="email" id="input_email" name="email" placeholder="name@company" value="<?php echo ($user_object) ? htmlspecialchars($user_object->email) : ''; ?>" required />
 			<span id="email_warning"></span>
 		</div>
 		<div>
