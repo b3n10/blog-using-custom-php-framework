@@ -29,6 +29,13 @@ class Login extends \Core\Controller {
 			Auth::login($user, ($_POST['remember_me'] ?? false));
 			Flash::addMessage('Login successful!');
 			$this->redirect(Auth::returnToPrevPage());
+		} else if ($user === 0) {
+			Flash::addMessage('Account not yet active! Please check your email.', Flash::WARNING);
+			View::render('Login/new.php', [
+				'title'				=>	'Login',
+				'email'				=>	htmlspecialchars($_POST['email']),
+				'remember_me'	=>	isset($_POST['remember_me']) ? 'checked' : ''
+			]);
 		} else {
 			Flash::addMessage('Invalid email/password!', Flash::WARNING);
 			View::render('Login/new.php', [
