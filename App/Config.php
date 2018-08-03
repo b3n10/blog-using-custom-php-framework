@@ -14,7 +14,6 @@ class Config {
 	const DBNAME			=	'blog';
 
 	const SHOW_ERRORS	=	true;
-	const SECRET_KEY	=	'qpHB25v1wj4A5HfDMvcfERQHJ8ICa7Bx';
 
 	public static function getDSN() {
 		$db = parse_url(getenv(self::ENV_VAR));
@@ -27,6 +26,10 @@ class Config {
 			. ';dbname='	. (($db['path']) ? ltrim($db['path'], '/') : self::DBNAME);
 
 		return $dsn;
+	}
+
+	public static function getSecretKey() {
+		return getenv('SECRET_KEY');
 	}
 
 }
