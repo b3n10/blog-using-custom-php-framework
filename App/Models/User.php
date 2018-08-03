@@ -20,16 +20,23 @@ class User extends \Core\Model {
 		if (!empty($this->validate())) {
 			return false;
 		} else {
-			$sql = 'INSERT INTO users (name, email, password_hash)
-				VALUES (:name, :email, :password_hash)';
+			$sql = 'INSERT INTO users (name, email, password_hash, activation_hash)
+				VALUES (:name, :email, :password_hash, :activation_hash)';
+
+			$token = new Token();
+			$activation_hash = $token->getHash();
+			$this->activation_token = $token->getValue();
 
 			$pdo = self::connectDB();
 			$stmt = $pdo->prepare($sql);
 
 			$stmt->bindValue(':name', $this->name, PDO::PARAM_STR);
 			$stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
+
 			$password_hash = password_hash($this->password, PASSWORD_DEFAULT);
 			$stmt->bindValue(':password_hash', $password_hash, PDO::PARAM_STR);
+
+			$stmt->bindValue(':activation_hash', $activation_hash, PDO::PARAM_STR);
 
 			return $stmt->execute();
 		}
@@ -217,6 +224,17 @@ class User extends \Core\Model {
 		$stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
 
 		return $stmt->execute();
+	}
+
+	public function sendActivationEmail() {
+
+		$url = 'http://' . $_SERVER['HTTP_HOST'] . '/signup/activate' . $this->activation_token;
+
+		$text = "Please click on the following link to activate your account: $url.";
+		$html = "Please click on the following <a href='$url'>link</a> to activate your account.";
+
+		Mail::send($this->email, 'Account Activation', $text, $html);
+
 	}
 
 }
