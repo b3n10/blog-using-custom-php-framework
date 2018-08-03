@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use \Core\View;
 use \App\Models\User;
+use \App\Flash;
 
 class Signup extends \Core\Controller {
 
@@ -38,6 +39,21 @@ class Signup extends \Core\Controller {
 		View::render("Signup/success.php", [
 			"title"	=>	"Signup Success"
 		]);
+	}
+
+	public function activateAction() {
+		$token = $this->route_params['token'];
+
+		$user = User::findByActivationToken($token);
+
+		if ($user) {
+			View::render('Signup/account-active.php', [
+				'title'	=>	'Account activated !'
+			]);
+		} else {
+			Flash::addMessage('Account already active!', Flash::WARNING);
+			$this->redirect('/');
+		}
 	}
 
 }

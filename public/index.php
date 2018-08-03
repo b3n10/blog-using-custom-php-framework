@@ -36,5 +36,11 @@ Router::add('password/reset/{token:[\da-f]+}', [
 	'action'			=>	'reset'
 ]);
 
+// custom route for activation token
+Router::add('signup/activate/{token:[\da-f]+}', [
+	'controller'	=>	'Signup',
+	'action'			=>	'activate'
+]);
+
 Router::dispatch($url);
 

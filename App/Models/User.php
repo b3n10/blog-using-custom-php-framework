@@ -210,6 +210,36 @@ class User extends \Core\Model {
 		return false;
 	}
 
+	public static function findByActivationToken($token) {
+		$token = new Token($token);
+		$activation_hash = $token->getHash();
+
+		$sql = 'SELECT * FROM users
+			WHERE activation_hash=:activation_hash';
+
+		$pdo = self::connectDB();
+		$stmt = $pdo->prepare($sql);
+		$stmt->bindValue(':activation_hash', $activation_hash, PDO::PARAM_STR);
+		$stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+		$stmt->execute();
+
+		if ($user = $stmt->fetch()) {
+			$sql = 'UPDATE users
+				SET activation_hash=NULL,
+						is_active=1
+				WHERE id=:id';
+
+			$pdo = self::connectDB();
+			$stmt = $pdo->prepare($sql);
+			$stmt->bindValue(':id', $user->id, PDO::PARAM_INT);
+			$stmt->execute();
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public function resetPassword($password) {
 		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
@@ -230,7 +260,7 @@ class User extends \Core\Model {
 
 	public function sendActivationEmail() {
 
-		$url = 'http://' . $_SERVER['HTTP_HOST'] . '/signup/activate' . $this->activation_token;
+		$url = 'http://' . $_SERVER['HTTP_HOST'] . '/signup/activate/' . $this->activation_token;
 
 		$text = "Please click on the following link to activate your account: $url.";
 		$html = "Please click on the following <a href='$url'>link</a> to activate your account.";
