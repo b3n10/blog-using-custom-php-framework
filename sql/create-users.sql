@@ -15,7 +15,7 @@ CREATE TABLE users (
 -- 	password_hash 				VARCHAR(255),
 -- 	password_reset_hash		VARCHAR(64),
 -- 	password_reset_expiry TIMESTAMP,
--- 	activation_hash				VARCHAR(64),
+-- 	activation_hash				VARCHAR(64) DEFAULT NULL,
 -- 	is_actie							SMALLINT DEFAULT 0,
 -- 	UNIQUE(activation_hash),
 -- 	UNIQUE(email),
