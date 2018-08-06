@@ -51,7 +51,7 @@ class User extends \Core\Model {
 		}
 
 		// email
-		if (self::emailExists($this->email)) {
+		if (self::emailExists($this->email, $this->id ?? null)) {
 			$this->errors[] = 'Email already exists!';
 		}
 		if (empty($this->email)) {
@@ -61,7 +61,7 @@ class User extends \Core\Model {
 		}
 
 		// password
-		$this->validatePassword();
+		if (isset($this->password)) $this->validatePassword();
 
 		return $this->errors;
 	}
@@ -75,8 +75,12 @@ class User extends \Core\Model {
 		if (preg_match('/.*[!-\/:-@\[-`{-~].*/', $this->password) === 0) $this->errors[] = 'Password must have at least one symbol!';
 	}
 
-	public static function emailExists($email) {
-		return self::findByEmail($email) !== false;
+	public static function emailExists($email, $ignore_id = null) {
+		$user = self::findByEmail($email);
+
+		if ($user) return $user->id != intval($ignore_id);
+
+		return false;
 	}
 
 	private static function findByEmail($email) {
@@ -267,6 +271,39 @@ class User extends \Core\Model {
 
 		Mail::send($this->email, 'Account Activation', $text, $html);
 
+	}
+
+	public function updateProfile($data) {
+
+		$this->name = $data['name'];
+		$this->email = $data['email'];
+		if ($data['password'] !== '') {
+			$this->password = $data['password'];
+			$this->confirm_password = $data['confirm_password'];
+		}
+
+		if (empty($this->validate())) {
+
+			$sql = 'UPDATE users SET
+				name=:name,
+				email=:email';
+
+			if (isset($this->password)) $sql .= ', password_hash=:password_hash';
+
+			$sql .= ' WHERE id=:id';
+
+			$pdo = self::connectDB();
+			$stmt = $pdo->prepare($sql);
+
+			$stmt->bindValue(':name', $this->name, PDO::PARAM_STR);
+			$stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
+			if (isset($this->password)) $stmt->bindValue(':password_hash', password_hash($this->password, PASSWORD_DEFAULT), PDO::PARAM_STR);
+			$stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
+
+			return $stmt->execute();
+		}
+
+		return false;
 	}
 
 }
