@@ -9,6 +9,11 @@ use \App\Auth;
 
 class Profile extends Authenticated {
 
+	public function before() {
+		parent::before();
+		$this->user = Auth::getUser();
+	}
+
 	public function showAction() {
 		View::render('Profile/show.php', [
 			'title'	=>	'Profile page'
@@ -29,15 +34,13 @@ class Profile extends Authenticated {
 			exit;
 		}
 
-		$user = Auth::getUser();
-
-		if ($user->updateProfile($_POST)) {
+		if ($this->user->updateProfile($_POST)) {
 			Flash::addMessage('Changes saved');
 			$this->redirect('/profile/show');
 		} else {
 			View::render('Profile/edit.php', [
 				'title'	=>	'Profile page - validation errors',
-				'user_object'	=>	$user
+				'user_object'	=>	$this->user
 			]);
 		}
 	}

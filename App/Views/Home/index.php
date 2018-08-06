@@ -1,12 +1,9 @@
 <?php require_once dirname(__DIR__) . "/header.php"; ?>
 	<h1>Welcome :)</h1>
 	<?php if ($user_object): ?>
-	<p>Hi <?php echo htmlspecialchars($user_object->name); ?>.
-	<ul>
-		<li><a href="/profile/show">User profile</a></li>
-		<li><a href="/logout">Log out</a></li>
-	</ul>
-</p>
+	<p>
+	Hi <?php echo htmlspecialchars($user_object->name); ?>. <a href="/logout">Log out</a>
+	</p>
 	<?php else: ?>
 		<a href="/signup/new">Sign up</a> or <a href="/login/">log in</a>
 	<?php endif ?>
